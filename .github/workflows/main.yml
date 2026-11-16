@@ -1,0 +1,40 @@
+
+name: Java DevOps CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Build and test Java application
+        run: |
+          cat > Hello.java <<'EOF'
+          public class Hello {
+              public static void main(String[] args) {
+                  String message = "Hello, DevOps!";
+                  System.out.println(message);
+
+                  if (!message.equals("Hello, DevOps!")) {
+                      throw new RuntimeException("Test failed");
+                  }
+
+                  System.out.println("Test passed!");
+              }
+          }
+          EOF
+          javac Hello.java
+          java Hello
